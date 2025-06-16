@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora VLSM | Redes de Datos</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+    <style>
+
+        body {
+            font-size: 10px !important;
+        }
+
+        .table th, .table td {
+            font-size: 9px !important;
+        }
+
+        .resultado-box {
+            font-size: 10px !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="calculator-card">
+                    <div class="calculator-header text-center">
+                        <h2 class="mb-0">
+                            <span class="logo-icon"><i class="bi bi-calculator-fill"></i></span>
+                            <span class="logo">CALCULADORA VLSM</span>
+                        </h2>
+                        <p class="mb-0 mt-2">Calculadora de subredes con máscara de longitud variable</p>
+                    </div>
+
+                    <div class="card-body p-4">
+                        <h4 class="section-title">Resultado del cálculo VLSM</h4>
+
+                        {% if redes %}
+                        <div class="resultado-box mt-4">
+                            <h4 class="mb-3 text-primary"><i class="bi bi-table me-2"></i> Detalle de Subredes</h4>
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-striped">
+                                    <thead class="table-primary">
+                                        <tr>
+                                            <th>Nombre</th>
+                                            <th>IP Asignada</th>
+                                            <th>Primera Utilizable</th>
+                                            <th>Última Utilizable</th>
+                                            <th>Broadcast</th>
+                                            <th>Máscara</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for red in redes %}
+                                        <tr>
+                                            <td>{{ red.nombre }}</td>
+                                            <td>{{ red.ip.a_str() }}</td>
+                                            <td>{{ red.ip.primeraUtilizable() | join('.') }}</td>
+                                            <td>{{ red.ip.UltimaUtilizable() | join('.') }}</td>
+                                            <td>{{ red.ip.ipBrodcast() | join('.') }}</td>
+                                            <td>{{ red.ip.mascara }}</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer>
+        <div class="text-center">
+            <p class="footer-text">Calculadora VLSM &copy; 2025 | Desarrollado por Dario Lopez | Redes de Datos</p>
+        </div>
+    </footer>
+</body>
+
+</html>
