@@ -29,7 +29,9 @@ def index():
 
         v = vlcm(ip_obj, redes_info)
         resultado = v.vlcm()
+
         redes_resultado = v.redes_info
+        resultado = resultado.replace("\t", "   ")
 
     return render_template("index.html", resultado=resultado, redes=redes_resultado)
 

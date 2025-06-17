@@ -6,145 +6,490 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calculadora VLSM | Redes de Datos</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --primary-color: #667eea;
+            --secondary-color: #764ba2;
+            --accent-color: #f093fb;
+            --text-color: #2d3748;
+            --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --card-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            --border-radius: 20px;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            min-height: 100vh;
+            color: var(--text-color);
+        }
+
+        .hero-section {
+            background: var(--bg-gradient);
+            padding: 4rem 0;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="white" stroke-opacity="0.1" stroke-width="1"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+            opacity: 0.3;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .calculator-card {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--card-shadow);
+            border: none;
+            overflow: hidden;
+            margin-top: -3rem;
+            position: relative;
+            z-index: 3;
+        }
+
+        .form-section {
+            padding: 2.5rem;
+        }
+
+        .section-title {
+            color: var(--primary-color);
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .form-control {
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 0.875rem 1rem;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: #f8fafc;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            background: white;
+        }
+
+        .input-group-text {
+            background: var(--bg-gradient);
+            color: white;
+            border: none;
+            border-radius: 12px 0 0 12px;
+            font-weight: 600;
+        }
+
+        .input-group .form-control {
+            border-left: none;
+            border-radius: 0 12px 12px 0;
+        }
+
+        .btn-calculate {
+            background: var(--bg-gradient);
+            border: none;
+            padding: 1rem 2.5rem;
+            font-weight: 600;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-calculate:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .example-text {
+            font-size: 0.875rem;
+            color: #64748b;
+            margin-top: 0.5rem;
+        }
+
+        .resultado-container {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--card-shadow);
+            margin-top: 2rem;
+            overflow: hidden;
+        }
+
+        .resultado-header {
+            background: var(--bg-gradient);
+            color: white;
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .resultado-content {
+            padding: 2rem;
+        }
+
+        .table-modern {
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            margin: 0;
+        }
+
+        .table-modern thead th {
+            background: var(--bg-gradient);
+            color: white;
+            font-weight: 600;
+            padding: 1rem 0.75rem;
+            border: none;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .table-modern tbody td {
+            padding: 1rem 0.75rem;
+            border: none;
+            border-bottom: 1px solid #f1f5f9;
+            vertical-align: middle;
+        }
+
+        .table-modern tbody tr:hover {
+            background: #f8fafc;
+            transform: scale(1.01);
+            transition: all 0.2s ease;
+        }
+
+        .ip-badge {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 0.4rem 0.8rem;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .network-name {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .pdf-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-pdf {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-pdf:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 107, 107, 0.4);
+            color: white;
+        }
+
+        .process-result {
+            background: #1a202c;
+            color: #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 12px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .alert-info {
+            background: linear-gradient(45deg, #3182ce, #2b77cb);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 1rem 1.5rem;
+        }
+
+        .footer {
+            background: var(--bg-gradient);
+            color: white;
+            padding: 2rem 0;
+            margin-top: 4rem;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .hero-section {
+                padding: 2rem 0;
+            }
+
+            .form-section {
+                padding: 1.5rem;
+            }
+
+            .pdf-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+
+        /* Animaciones */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .calculator-card {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .resultado-container {
+            animation: fadeInUp 0.6s ease-out 0.2s both;
+        }
+    </style>
 </head>
 
 <body>
-    <div class="container py-5">
-        <div class="row justify-content-center">
-            <div class="col-lg-8">
-                <div class="calculator-card">
-                    <div class="calculator-header text-center">
-                        <h2 class="mb-0">
-                            <span class="logo-icon"><i class="bi bi-calculator-fill"></i></span>
-                            <span class="logo">CALCULADORA VLSM</span>
-                        </h2>
-                        <p class="mb-0 mt-2">Calculadora de subredes con máscara de longitud variable</p>
+    <!-- Hero Section -->
+    <div class="hero-section">
+        <div class="container hero-content text-center">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <h1 class="display-4 fw-bold mb-3">
+                        <i class="bi bi-diagram-3-fill me-3"></i>
+                        Calculadora VLSM
+                    </h1>
+                    <p class="lead mb-0">Herramienta avanzada para el cálculo de subredes con máscara de longitud variable</p>
+                    <div class="mt-3">
+                        <span class="badge bg-light text-dark me-2">IPv4</span>
+                        <span class="badge bg-light text-dark me-2">CIDR</span>
+                        <span class="badge bg-light text-dark">Subnetting</span>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-                    <div class="card-body p-4">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <!-- Formulario Principal -->
+                <div class="calculator-card">
+                    <div class="form-section">
                         <form method="POST">
-                            <h4 class="section-title">Información de red base</h4>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <h4 class="section-title">
+                                        <i class="bi bi-hdd-network"></i>
+                                        Configuración de Red Base
+                                    </h4>
 
-                            <div class="row mb-4">
-                                <div class="col-md-6 mb-3 mb-md-0">
-                                    <label for="ip_base" class="form-label fw-bold">Dirección IP de red</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text"><i class="bi bi-ip"></i></span>
-                                        <input type="text" class="form-control" name="ip_base" placeholder="Ej: 192.168.0.0" required>
+                                    <div class="mb-4">
+                                        <label for="ip_base" class="form-label fw-bold">Dirección IP de Red</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text">
+                                                <i class="bi bi-router"></i>
+                                            </span>
+                                            <input type="text" class="form-control" name="ip_base"
+                                                   placeholder="192.168.0.0" required>
+                                        </div>
+                                        <div class="example-text">
+                                            <i class="bi bi-info-circle"></i>
+                                            Ingrese la dirección de red base (ej: 192.168.1.0)
+                                        </div>
                                     </div>
-                                    <p class="example-text">Ingrese la dirección IP de red (ej: 192.168.1.0)</p>
+
+                                    <div class="mb-4">
+                                        <label for="mascara" class="form-label fw-bold">Máscara de Red (CIDR)</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text">/</span>
+                                            <input type="number" class="form-control" name="mascara"
+                                                   min="8" max="30" placeholder="24" required>
+                                        </div>
+                                        <div class="example-text">
+                                            <i class="bi bi-info-circle"></i>
+                                            Prefijo de red en notación CIDR (8-30)
+                                        </div>
+                                    </div>
                                 </div>
 
-                                <div class="col-md-6">
-                                    <label for="mascara" class="form-label fw-bold">Máscara de red</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text">/</span>
-                                        <input type="number" class="form-control" name="mascara" min="1" max="30" placeholder="Ej: 24" required>
+                                <div class="col-lg-6">
+                                    <h4 class="section-title">
+                                        <i class="bi bi-list-ol"></i>
+                                        Especificación de Subredes
+                                    </h4>
+
+                                    <div class="mb-4">
+                                        <label for="redes" class="form-label fw-bold">Subredes Requeridas</label>
+                                        <textarea name="redes" class="form-control" rows="8"
+                                                  placeholder="Ventas,100&#10;Administración,50&#10;IT,30&#10;Invitados,10"
+                                                  required></textarea>
+                                        <div class="example-text">
+                                            <i class="bi bi-lightbulb"></i>
+                                            Formato: <strong>Nombre,Hosts</strong> (una subred por línea)
+                                        </div>
                                     </div>
-                                    <p class="example-text">Ingrese la máscara en formato CIDR (1-30)</p>
                                 </div>
-                            </div>
-
-                            <h4 class="section-title">Configuración de subredes</h4>
-
-                            <div class="mb-4">
-                                <label for="redes" class="form-label fw-bold">Especificación de subredes</label>
-                                          <textarea name="redes" class="form-control" rows="6" placeholder="Red A,100&#10;Red B,50&#10;Red C,30" required></textarea>
-                                <p class="example-text">
-                                    <i class="bi bi-info-circle-fill"></i> Formato: Nombre de red, Cantidad de hosts (uno por línea)
-                                </p>
                             </div>
 
                             <div class="text-center mt-4">
                                 <button type="submit" class="btn btn-calculate btn-lg">
-                                    <i class="bi bi-calculator me-2"></i> Calcular Subredes
+                                    <i class="bi bi-calculator me-2"></i>
+                                    Calcular Subredes VLSM
                                 </button>
                             </div>
                         </form>
                     </div>
                 </div>
 
+                <!-- Resultado del Proceso -->
                 {% if resultado %}
-                <div class="resultado-box">
-                    <h4 class="mb-3 text-primary"><i class="bi bi-diagram-3-fill me-2"></i> Resultado del cálculo VLSM</h4>
-                    <hr>
-                    {{ resultado }}
+                <div class="resultado-container">
+                    <div class="resultado-header">
+                        <i class="bi bi-gear-fill"></i>
+                        <h4 class="mb-0">Proceso de Cálculo VLSM</h4>
+                    </div>
+                    <div class="resultado-content">
+                        <div class="process-result">{{ resultado }}</div>
+                    </div>
                 </div>
                 {% endif %}
-            {% if redes %}
-            <div class="resultado-box mt-4">
-                <h4 class="mb-3 text-primary"><i class="bi bi-table me-2"></i> Detalle de Subredes</h4>
-                <div class="table-responsive">
-                    <table class="table table-bordered table-striped">
-                        <thead class="table-primary">
-                            <tr>
-                                <th>Nombre</th>
-                                <th>IP Asignada</th>
-                                <th>Primera Utilizable</th>
-                                <th>Última Utilizable</th>
-                                <th>Broadcast</th>
-                                <th>Máscara</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for red in redes %}
-                                <tr>
-                                    <td>{{ red.nombre }}</td>
-                                    <td>
-                                        {% if red.ip %}
-                                            {{ red.ip.a_str() }}
-                                        {% else %}
-                                            No asignada
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        {% if red.ip %}
-                                            {{ red.ip.primeraUtilizable() | join('.') }}
-                                        {% else %}
-                                            No asignada
-                                        {% endif %}
-                                    </td>
 
-                                    <td>
-                                        {% if red.ip %}
-                                            {{ red.ip.primeraUtilizable() | join('.') }}
-                                        {% else %}
-                                            No asignada
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        {% if red.ip %}
-                                            {{ red.ip.ipBrodcast() | join('.') }}
-                                        {% else %}
-                                            No asignada
-                                        {% endif %}
-                                    </td>
-                                    <td>{{ red.ip.mascara }}</td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            {% endif %}
-                <div class="text-center mt-4">
-                    <a href="{{ url_for('generate_pdf_report') }}" class="btn btn-primary btn-lg">
-                        <i class="bi bi-file-earmark-pdf me-2"></i> Descargar Reporte PDF
-                    </a>
-                    <a href="{{ url_for('generate_pdf_process') }}" class="btn btn-primary btn-lg mt-2">
-                        <i class="bi bi-file-earmark-pdf me-2"></i> Descargar Proceso PDF
-                    </a>
+                <!-- Tabla de Resultados -->
+                {% if redes %}
+                <div class="resultado-container">
+                    <div class="resultado-header">
+                        <i class="bi bi-table"></i>
+                        <h4 class="mb-0">Subredes Calculadas</h4>
+                    </div>
+                    <div class="resultado-content">
+                        <div class="alert alert-info mb-4">
+                            <i class="bi bi-check-circle-fill me-2"></i>
+                            Se han calculado exitosamente <strong>{{ redes|length }}</strong> subredes
+                        </div>
 
+                        <div class="table-responsive">
+                            <table class="table table-modern">
+                                <thead>
+                                    <tr>
+                                        <th><i class="bi bi-tag me-1"></i>Red</th>
+                                        <th><i class="bi bi-hdd-network me-1"></i>IP Asignada</th>
+                                        <th><i class="bi bi-play-fill me-1"></i>Primera IP</th>
+                                        <th><i class="bi bi-stop-fill me-1"></i>Última IP</th>
+                                        <th><i class="bi bi-broadcast me-1"></i>Broadcast</th>
+                                        <th><i class="bi bi-mask me-1"></i>Máscara</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for red in redes %}
+                                    <tr>
+                                        <td>
+                                            <span class="network-name">{{ red.nombre }}</span>
+                                        </td>
+                                        <td>
+                                            {% if red.ip %}
+                                                <span class="ip-badge">{{ red.ip.a_str() }}</span>
+                                            {% else %}
+                                                <span class="text-muted">No asignada</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if red.ip %}
+                                                <code>{{ red.ip.primeraUtilizable() | join('.') }}</code>
+                                            {% else %}
+                                                <span class="text-muted">-</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if red.ip %}
+                                                <code>{{ red.ip.UltimaUtilizable() | join('.') }}</code>
+                                            {% else %}
+                                                <span class="text-muted">-</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if red.ip %}
+                                                <code>{{ red.ip.ipBrodcast() | join('.') }}</code>
+                                            {% else %}
+                                                <span class="text-muted">-</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-primary">{{ red.ip.mascara }}</span>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="pdf-buttons">
+                            <a href="{{ url_for('generate_pdf_report') }}" class="btn-pdf">
+                                <i class="bi bi-file-earmark-pdf"></i>
+                                Descargar Reporte Detallado
+                            </a>
+                            <a href="{{ url_for('generate_pdf_process') }}" class="btn-pdf">
+                                <i class="bi bi-gear-fill"></i>
+                                Descargar Proceso Completo
+                            </a>
+                        </div>
+                    </div>
                 </div>
+                {% endif %}
             </div>
         </div>
     </div>
 
-    <footer>
-        <div class="text-center">
-            <p class="footer-text">Calculadora VLSM &copy; 2025 | Desarrollado por Dario Lopez | Redes de Datos</p>
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <p class="mb-0">
+                        <strong>Calculadora VLSM</strong> &copy; 2025
+                    </p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <p class="mb-0">
+                        Desarrollado por <strong>Dario Lopez</strong> | Redes de Datos
+                    </p>
+                </div>
+            </div>
         </div>
     </footer>
 
