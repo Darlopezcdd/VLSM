@@ -147,8 +147,16 @@ class vlcm:
         for ipa in ips:
             ip_part = ipa.split("→")[0].strip()
             mask = int(ip_part.split("/")[-1])
+
+            direccion = ip_part.split("/")[0]
+            octetos = list(map(int, direccion.split(".")))
+
+            ip_objeto = Ip(octetos[0], octetos[1], octetos[2], octetos[3], mask)
+
+
+
             tabs = max(0, mask - num_tabs_base)
-            res += ("\t" * tabs) + ipa.strip() + "\n"
+            res += ("\t" * tabs) +ip_objeto.ip_a_bin()+" " +ipa.strip() + "\n"
 
         return res
 

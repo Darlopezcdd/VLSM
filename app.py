@@ -31,7 +31,7 @@ def index():
         resultado = v.vlcm()
 
         redes_resultado = v.redes_info
-        resultado = resultado.replace("\t", "   ")
+        resultado = resultado.replace("\t", " ")
 
     return render_template("index.html", resultado=resultado, redes=redes_resultado)
 
