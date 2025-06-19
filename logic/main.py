@@ -12,8 +12,8 @@ print("Máscara en binario:", ip.mascaraBinario())
 print("IP de red decimal:", ip.ip_redDecimal())
 print("IP de red binario:", ip.ip_redBinario())
 print(ip.verificarIpRed())
-print(ip.ip_a_str())
-print(ip.binarioADecimal(ip.str_a_ip(ip.ip_a_str())))
+print(ip.ip_a_bin())
+print(ip.binarioADecimal(ip.str_a_ip(ip.ip_a_bin())))
 print("-------------------------------")
 print(ip.ipBrodcast())
 
@@ -40,7 +40,7 @@ ip1 = Ip(ippadre.ip_redDecimal()[0], ippadre.ip_redDecimal()[1], ippadre.ip_redD
          ippadre.ip_redDecimal()[3], ippadre.mascara + 1)
 a="\t" * numtabs
 proceso += a + ip1.__str__() + "\n"
-ip_bin = ippadre.ip_a_str()
+ip_bin = ippadre.ip_a_bin()
 intb = list(ip_bin)
 intb[ippadre.mascara] = '1'
 ip_octbin = ippadre.binarioADecimal(ippadre.str_a_ip("".join(intb)))

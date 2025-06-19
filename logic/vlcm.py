@@ -8,6 +8,10 @@ class vlcm:
     def __init__(self, ip_objeto, redes_info):
         self.ip_objeto = ip_objeto
         self.redes_info = redes_info
+
+
+
+
     def organizar_redes(self):
         redes= self.redes_info
         for i in range(len(redes)):
@@ -15,11 +19,19 @@ class vlcm:
                 if redes[j].cantidad_hosts < redes[j + 1].cantidad_hosts:
                     redes[j], redes[j + 1] = redes[j + 1], redes[j]
 
+
+
+
+
+
     def vlcm(self):
         proceso = []
+
         lengredes = len(self.redes_info)
         chostip = self.ip_objeto.cantidad_hosts()
+
         self.redes_info[0].calcular_hostsnesesarios()
+
         chostsred = self.redes_info[0].hostsnesesarios
         if lengredes ==1 and chostip == chostsred:
             self.redes_info[0].asignar_ip(self.ip_objeto)
@@ -69,16 +81,11 @@ class vlcm:
 
                         if len(redeslibres) > 0:
                             Ipb = redeslibres.pop()
-                        else:
-                            Ipb = ipdivi[1]
                         continue
                     elif ipdivi[1].cantidad_hosts() > rede.hostsnesesarios and self.verificar_ips(ipdivi[0]):
                         Ipb = ipdivi[1]
                         redeslibres.append(ipdivi[1])
-                    else:
-                        if Ipb != ipdivi[1]:
-                            Ipb = ipdivi[0]
-                            redeslibres.append(ipdivi[1])
+
             else:
                 return "No es posible dividir la IP en subredes adecuadas."
 
@@ -108,7 +115,7 @@ class vlcm:
             ip1 = Ip(ippadre.ip_redDecimal()[0], ippadre.ip_redDecimal()[1], ippadre.ip_redDecimal()[2],
                      ippadre.ip_redDecimal()[3], mascara_nueva)
 
-            ip_bin = ippadre.ip_a_str()
+            ip_bin = ippadre.ip_a_bin()
             intb = list(ip_bin)
             intb[ippadre.mascara] = '1'
             ip_octbin = ippadre.binarioADecimal(ippadre.str_a_ip("".join(intb)))
@@ -124,29 +131,16 @@ class vlcm:
                 rede.calcular_hostsnesesarios()
                 sum+= rede.hostsnesesarios
         return sum<self.ip_objeto.cantidad_hosts()
+
+
     def proceso(self, ips):
         res=""
 
-        def ip_to_int(ip_string):
-            ip_parte = ip_string.split("→")[0].strip().split("/")[0]
 
-            octetos = ip_parte.split(".")
-
-            octeto1 = int(octetos[0])
-            octeto2 = int(octetos[1])
-            octeto3 = int(octetos[2])
-            octeto4 = int(octetos[3])
-
-            valor_ip = octeto1 * 256 ** 3
-            valor_ip += octeto2 * 256 ** 2
-            valor_ip += octeto3 * 256
-            valor_ip += octeto4
-
-            return valor_ip
         for i in range(len(ips)):
             for j in range(len(ips) - 1):
-                ip1 = ip_to_int(ips[j])
-                ip2 = ip_to_int(ips[j + 1])
+                ip1 = self.ip_to_int(ips[j])
+                ip2 = self.ip_to_int(ips[j + 1])
                 if ip1 > ip2:
                     ips[j], ips[j + 1] = ips[j + 1], ips[j]
         num_tabs_base = self.ip_objeto.mascara
@@ -157,6 +151,23 @@ class vlcm:
             res += ("\t" * tabs) + ipa.strip() + "\n"
 
         return res
+
+    def ip_to_int(self,ip_string):
+        ip_parte = ip_string.split("→")[0].strip().split("/")[0]
+
+        octetos = ip_parte.split(".")
+
+        octeto1 = int(octetos[0])
+        octeto2 = int(octetos[1])
+        octeto3 = int(octetos[2])
+        octeto4 = int(octetos[3])
+
+        valor_ip = octeto1 * 256 ** 3
+        valor_ip += octeto2 * 256 ** 2
+        valor_ip += octeto3 * 256
+        valor_ip += octeto4
+
+        return valor_ip
 
 
 

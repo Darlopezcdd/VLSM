@@ -9,7 +9,7 @@ class Ip:
         return self.a_str()
 
     #--------CALCULOS-----------------------------------------#
-    def ip_a_str(self):
+    def ip_a_bin(self):
         a=""
         for i in self.ip_redBinario():
             a+= str(i)
@@ -113,15 +113,15 @@ class Ip:
             return False
 
     def ipBrodcast(self):
-        intb = list(self.ip_a_str())
+        intb = list(self.ip_a_bin())
         for i in range(self.mascara,32):
             intb[i]='1'
         return self.binarioADecimal(self.str_a_ip("".join(intb)))
     def primeraUtilizable(self):
-        a=int(self.ip_a_str())
+        a=int(self.ip_a_bin())
         return self.binarioADecimal(self.str_a_ip(str(a+1)))
     def UltimaUtilizable(self):
-        intb = list(self.ip_a_str())
+        intb = list(self.ip_a_bin())
         for i in range(self.mascara,31):
             intb[i]='1'
         return self.binarioADecimal(self.str_a_ip("".join(intb)))
